@@ -9,7 +9,7 @@ fast_api_project
 ├── migrations
 │   ├── env.py
 │   └── versions
-│       └── 2023_11_09_0832-382ab0927111_add_user_table.py
+│       └── 2026_01_16_1440-6bdbade326ed_add_user_table.py
 ├── poetry.lock
 ├── pyproject.toml
 ├── user
