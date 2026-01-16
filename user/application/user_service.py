@@ -5,6 +5,7 @@ from user.domain.repository.user_repo import IUserRepository
 from user.infra.repository.user_repo import UserRepository
 from fastapi import HTTPException
 from utils.crypto import Crypto
+# print("USER_SERVICE FILE:", __file__)
 
 # 유저 서비스
 class UserService:
@@ -29,7 +30,7 @@ class UserService:
             id = self.ulid.generate(),
             name = name,
             email = email,
-            password = self.crypto.encrypt(password), # 암호화 해서 저장
+            password = self.crypto.encrypt(password),
             created_at = now,
             updated_at = now,
         )
