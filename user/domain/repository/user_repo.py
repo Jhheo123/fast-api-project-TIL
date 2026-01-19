@@ -22,3 +22,9 @@ class IUserRepository(metaclass=ABCMeta):
         
         raise User(**row_to_dict(user)
         )
+    @abstractmethod
+    def find_by_id(self, id: str) -> User:
+        raise NotImplementedError
+    @abstractmethod
+    def update(self, user:User):
+        raise NotImplementedError

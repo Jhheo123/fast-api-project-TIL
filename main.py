@@ -4,7 +4,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
+from containers import Container
+
 app = FastAPI()
+container = Container()
+container.wire(modules=["user.interface.controllers.user_controller"])
+app.container = container
+
 app.include_router(user_routers)
 
 @app.exception_handler(RequestValidationError) # 422 에러가 발생했을 때 에러 핸들러 등록
