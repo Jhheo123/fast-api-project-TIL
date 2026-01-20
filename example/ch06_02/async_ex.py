@@ -6,7 +6,7 @@ router = APIRouter(prefix="/async-test")
 
 async def async_task(num):
     print("async_task: ", num)
-    await asyncio.sleep(1)
+    await asyncio.sleep(1) # 비동기 작업 1초 대기
     return num
 
 @router.get("")
