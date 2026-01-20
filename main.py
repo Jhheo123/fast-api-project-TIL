@@ -5,6 +5,9 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from containers import Container
+# 동기식 예시 / 비동기 예시
+from example.ch06_02.sync_ex import router as sync_ex_routers
+from example.ch06_02.async_ex import router as async_ex_routers
 
 app = FastAPI()
 container = Container()
@@ -12,6 +15,8 @@ container.wire(modules=["user.interface.controllers.user_controller"])
 app.container = container
 
 app.include_router(user_routers)
+app.include_router(sync_ex_routers)
+app.include_router(async_ex_routers)
 
 @app.exception_handler(RequestValidationError) # 422 에러가 발생했을 때 에러 핸들러 등록
 async def validation_exeception_handler(
