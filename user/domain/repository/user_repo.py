@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from user.domain.user import User 
+# from user.infra.db_models import User
 from fastapi import HTTPException
 from database import SessionLocal # DB 세션
 from utils.db_utils import row_to_dict
@@ -17,11 +18,12 @@ class IUserRepository(metaclass=ABCMeta):
         """
         with SessionLocal() as db:
             user = db.query(User).filter(User.email == email).first()
+        
         if not user:
             raise HTTPException(status_code =422)
         
-        raise User(**row_to_dict(user)
-        )
+        return User(**row_to_dict(user))
+         
     @abstractmethod
     def find_by_id(self, id: str) -> User:
         raise NotImplementedError

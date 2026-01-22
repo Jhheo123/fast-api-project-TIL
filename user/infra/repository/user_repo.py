@@ -25,7 +25,17 @@ class UserRepository(IUserRepository):
                 db.close()
     
     def find_by_email(self, email: str) -> User:
-        pass
+        """
+        이메일로 유저를 검색한다. 
+        검색한 유저가 없을 경우 422 에러를 발생시킨다.
+        """
+        with SessionLocal() as db:
+            user = db.query(User).filter(User.email == email).first()
+        
+        if not user:
+            raise HTTPException(status_code =422)
+        
+        return User(**row_to_dict(user))
 
     def find_by_id(self, id: str):
         with SessionLocal() as db:

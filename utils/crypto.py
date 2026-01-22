@@ -9,8 +9,8 @@ class Crypto:
         return hashlib.sha256(secret.encode("utf-8")).hexdigest()
     def encrypt(self, secret: str) -> str:
         print(">>> CRYPTO VERSION: normalize enabled")  # 이게 찍히는지 확인!
-        normalized = self._normalize(secret)        
-        return self.pwd_context.hash(normalized)
+        # normalized = self._normalize(secret)        
+        return self.pwd_context.hash(secret)
     def verify(self, secret: str, hashed: str) -> bool:
-        normalized = self._normalize(secret)
-        return self.pwd_context.verify(normalized, hashed)
+        # normalized = self._normalize(secret)
+        return self.pwd_context.verify(secret, hashed)

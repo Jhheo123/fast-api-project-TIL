@@ -3,8 +3,10 @@ from datetime import datetime
 from user.domain.user import User
 from user.domain.repository.user_repo import IUserRepository
 from user.infra.repository.user_repo import UserRepository
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from utils.crypto import Crypto
+from common.auth import Role, create_access_token
+from database import SessionLocal 
 # print("USER_SERVICE FILE:", __file__)
 
 # 유저 서비스
@@ -66,3 +68,39 @@ class UserService:
     
     def delete_user(self, user_id:str):
         self.user_repo.delete(user_id)
+
+    def login(self, email: str, password: str):
+        # user = self.user_repo.find_by_email(email)
+        # 1. 함수 시작 직후에 무조건 찍히는 로그
+        print(f"\n[DEBUG] 로그인 시도 이메일: '{email}'") 
+        
+        try:
+            user = self.user_repo.find_by_email(email)
+        except HTTPException: # Repo가 던진 422 에러를 여기서 잡음
+            user = None
+
+        # 2. 유저 존재 여부 확인 로그
+        if user is None:
+            print(f"[DEBUG] DB에서 해당 이메일을 찾을 수 없습니다.")
+        else:
+            print(f"[DEBUG] 유저 찾음! ID: {user.id}")
+        if user:
+            # 이 로그가 터미널에 찍히는지 확인하세요
+            print(f"--- LOGIN DEBUG ---")
+            print(f"입력 이메일: {email}")
+            print(f"입력 비밀번호: {password}")
+            print(f"DB 해시값: {user.password}")
+            is_correct = self.crypto.verify(password, user.password)
+            print(f"검증 결과: {is_correct}")
+
+        if not user or not self.crypto.verify(password, user.password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="이메일 또는 비밀번호가 올바르지 않습니다.")
+        
+        access_token = create_access_token(
+            payload = {"user_id": user.id},
+            role=Role.USER,
+        )
+
+        return access_token
+    
