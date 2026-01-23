@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from user.interface.controllers.user_controller import router as user_routers
+from note.interface.controllers.note_controller import router as note_routers
+
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
@@ -15,6 +17,8 @@ container.wire(modules=["user.interface.controllers.user_controller"])
 app.container = container
 
 app.include_router(user_routers)
+app.include_router(note_routers)
+
 app.include_router(sync_ex_routers)
 app.include_router(async_ex_routers)
 
