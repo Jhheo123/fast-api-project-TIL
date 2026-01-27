@@ -13,7 +13,8 @@ from example.ch06_02.async_ex import router as async_ex_routers
 
 app = FastAPI()
 container = Container()
-container.wire(modules=["user.interface.controllers.user_controller"])
+container.wire(modules=["user.interface.controllers.user_controller",
+                        "note.interface.controllers.note_controller"])
 app.container = container
 
 app.include_router(user_routers)

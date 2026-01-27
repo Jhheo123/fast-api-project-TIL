@@ -108,6 +108,8 @@ class NoteRepository(INoteRepository):
             note.tags = tags
             db.add(note)
             db.commit()
+            db.refresh(note)
+            return NoteVO(**row_to_dict(note))
         
     
     def delete_tags(self, user_id:str, id:str):
@@ -123,7 +125,7 @@ class NoteRepository(INoteRepository):
             db.add(note)
             db.commit()
 
-            unused_tags = db.query(Tag).filter(~Tag.notes.anay()).all()
+            unused_tags = db.query(Tag).filter(~Tag.notes.any()).all()
             for tag in unused_tags:
                 db.delete(tag)
 
@@ -157,6 +159,6 @@ class NoteRepository(INoteRepository):
             notes = (
                 query.offset((page-1) * items_per_page).limit(items_per_page).all()
             )
-        note_vos = [NoteVO(**row_to_dict) for note in notes]
+        note_vos = [NoteVO(**row_to_dict(note)) for note in notes]
 
         return total_count, note_vos

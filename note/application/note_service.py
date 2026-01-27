@@ -11,7 +11,7 @@ class NoteService:
             note_repo: INoteRepository
     ):
         self.note_repo = note_repo
-        self.ulid = ULID
+        self.ulid = ULID()
 
     def get_notes(
             self,
@@ -85,7 +85,7 @@ class NoteService:
             note.tags = [
                 Tag(
                     id = self.ulid.generate(),
-                    name = title,
+                    name = tag_names,
                     created_at=now,
                     updated_at=now,
                 )

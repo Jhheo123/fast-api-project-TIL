@@ -7,7 +7,7 @@ note_tag_association = Table(
     "Note_Tag",
     Base.metadata,
     Column("note_id", String(36), ForeignKey("Note.id")),
-    Column("tag)id", String(36), ForeignKey("Tag.id")),
+    Column("tag_id", String(36), ForeignKey("Tag.id")),
 )
 
 class Note(Base):
@@ -35,7 +35,7 @@ class Tag(Base):
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    note = relationship(
+    notes = relationship(
         "Note",
         secondary=note_tag_association,
         back_populates="tags",
