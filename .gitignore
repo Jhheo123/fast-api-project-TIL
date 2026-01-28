@@ -1,6 +1,11 @@
-# Poetry
+# Dependency files
 poetry.lock
 pyproject.toml
+
+# Config and Database files
 alembic.ini
 database.py
 .env
+
+# Specific test file
+user/domain/user_test.py
