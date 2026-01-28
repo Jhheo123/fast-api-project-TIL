@@ -3,7 +3,9 @@ from datetime import datetime
 from user.domain.user import User
 from user.domain.repository.user_repo import IUserRepository
 from user.infra.repository.user_repo import UserRepository
-from fastapi import HTTPException, status
+from user.application.email_service import EmailService
+from user.application.send_welcome_email_task import SendWelcomeEmailTask
+from fastapi import BackgroundTasks, HTTPException, status
 from utils.crypto import Crypto
 from common.auth import Role, create_access_token
 from database import SessionLocal 
@@ -13,18 +15,23 @@ from database import SessionLocal
 class UserService:
     def __init__(self,
                  user_repo: IUserRepository,
+                 email_service: EmailService,
                  ):
         self.user_repo = user_repo # 데이터 저장을 위한 구현체
         self.ulid = ULID()
         self.crypto = Crypto()
+        self.email_service = email_service
 
     def create_user(self, 
+                    # background_tasks: BackgroundTasks,
                     name: str, 
                     email: str, 
                     password: str,
                     memo: str | None = None): 
+
         # 중복 유저 검사
         _user = None # 이미 찾은 유저 변수
+
         try:
             _user = self.user_repo.find_by_email(email)
         except HTTPException as e:
@@ -44,6 +51,10 @@ class UserService:
             updated_at = now,
         )
         self.user_repo.save(user) # 생성된 객체를 저장소로 전달해 저장
+        # background_tasks.add_task(
+        #     self.email_service.send_email, user.email
+        # )
+        SendWelcomeEmailTask().run(user.email)
         return user
     
     def update_user(

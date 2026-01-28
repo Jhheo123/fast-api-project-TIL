@@ -1,9 +1,8 @@
-from fastapi import APIRouter
+from fastapi import BackgroundTasks, APIRouter, Depends
 from pydantic import BaseModel
 from user.application.user_service import UserService
 from dependency_injector.wiring import inject, Provide
 from containers import Container
-from fastapi import Depends
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from fastapi.security import OAuth2PasswordRequestForm
@@ -26,12 +25,14 @@ class CreateUserBody(BaseModel):
 @inject
 def create_user(
     user: CreateUserBody,
+    # background_tasks: BackgroundTasks,
     user_service:UserService = Depends(Provide[Container.user_service])
     )->UserResponse:
     print("PWD chars:", user.password)
     # print("PWD bytes:", len(user.password.encode("utf-8")))
     # user_service = UserService()
     createed_user = user_service.create_user(
+        # background_tasks = background_tasks,
         name = user.name,
         email = user.email,
         password= user.password
