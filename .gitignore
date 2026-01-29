@@ -9,3 +9,6 @@ database.py
 
 # Specific test file
 user/domain/user_test.py
+user/application/user_service_test.py
+user/interface/controllers/user_controller_test.py
+user/infra/repository/user_repo_test.py

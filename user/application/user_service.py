@@ -13,13 +13,18 @@ from database import SessionLocal
 
 # 유저 서비스
 class UserService:
+    @inject
     def __init__(self,
                  user_repo: IUserRepository,
                  email_service: EmailService,
+                 ulid: ULID,
+                 crypto: Crypto,
+                 send_welcome_email_task: SendWelcomeEmailTask
                  ):
         self.user_repo = user_repo # 데이터 저장을 위한 구현체
         self.ulid = ULID()
         self.crypto = Crypto()
+        self.send_welcome_email_task = send_welcome_email_task
         self.email_service = email_service
 
     def create_user(self, 
@@ -51,6 +56,7 @@ class UserService:
             updated_at = now,
         )
         self.user_repo.save(user) # 생성된 객체를 저장소로 전달해 저장
+        self.send_welcome_email_task.delay(user.email)
         # background_tasks.add_task(
         #     self.email_service.send_email, user.email
         # )
